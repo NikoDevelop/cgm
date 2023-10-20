@@ -1,0 +1,17 @@
+{% load static %} {% static "" as baseUrl %}
+ 
+<div class="container marketing" id="links">
+  <!-- Three columns of text below the carousel -->
+  <div class="row">
+         
+    <h1>FOTOS</h1>
+    <!-- <p>{{listado}}</p> -->
+    {% for value in listado %}
+      <div class="col-sm-12 col-md-4 col-lg-3 fotos">
+        <a href="assets/presidentes/primerpresidente.png" target="_blank">
+          <img src="media/{{ value.img }}" class="img-thumbnail" alt="...">
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div><!-- /.container -->
