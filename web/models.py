@@ -24,7 +24,7 @@ class Galeria (models.Model):
         verbose_name_plural = 'Galerias'
         ordering = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.titulo
     
 class GaleriaAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -46,7 +46,7 @@ class Links (models.Model):
         verbose_name_plural = 'Links'
         ordering = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.titulo
 
 class LinksAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -58,8 +58,8 @@ class LinksAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
 class Front (models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     img             = models.ImageField(upload_to='front/')
-    titulo          = models.CharField(max_length=200, blank=False, null=False)
-    contenido       = models.TextField()
+    titulo          = models.CharField(max_length=200, blank=True, null=True)
+    contenido       = models.TextField(blank=True, null=True)
     order           = models.IntegerField(default=0)
     file            = models.FileField(upload_to='front/files/', max_length=254,  blank=True)
 
@@ -68,7 +68,7 @@ class Front (models.Model):
         verbose_name_plural = 'Fronts'
         ordering = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.titulo
 
 class FrontAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -125,8 +125,8 @@ class Tipo (models.Model):
         verbose_name_plural = 'Tipos'
         ordering = ['order']
 
-    def _str_(self):
-        return self.tipo
+    def __str__(self):
+        return str(self.tipo)
     
 class TiposAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
     search_fields   = ['tipo']
@@ -137,7 +137,7 @@ class TiposAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
 # ADMINISTRA EL LISTADO DE IMAGENES DE PRESIDENTES, COMITE, ETC...
 class Listado (models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tipo            = models.ForeignKey(Tipo, blank=True, null=True, on_delete=models.CASCADE, verbose_name='tipo')
+    tipo            = models.ForeignKey(Tipo, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Tipo')
     titulo          = models.CharField(max_length=200, blank= False, null = False)
     img             = models.ImageField(upload_to='listado/')
     order           = models.IntegerField(default=0)
@@ -147,7 +147,7 @@ class Listado (models.Model):
         verbose_name_plural = 'Listados'
         ordering = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.titulo    
 
 class ListadosAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -176,7 +176,7 @@ class Card (models.Model):
         verbose_name_plural = 'Cards'
         ordering    = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.titulo
 
 class CardsAdmin (SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -206,6 +206,7 @@ class PerfilesAdmin (SearchAutoCompleteAdmin, admin.ModelAdmin):
     list_per_page   = 10
 
 
+
 # LA ESTRUCTURA DEL USUARIO QUE INTERACTUA CON EL SITIO CGM
 class Usuario (models.Model):
     id                  = models.UUIDField(primary_key=True, default=uuid.uuid4, editable= False)
@@ -230,7 +231,7 @@ class Usuario (models.Model):
         verbose_name_plural = 'Usuarios'
         ordering    = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.rut
     
 class UsuariosAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -256,7 +257,7 @@ class Club(models.Model):
         verbose_name_plural = 'Clubes'
         ordering    = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
     
 class ClubesAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
@@ -283,7 +284,7 @@ class Campeonato(models.Model):
         verbose_name_plural = 'Campeonatos'
         ordering    = ['order']
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
     
 
