@@ -36,12 +36,13 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap"
       rel="stylesheet"/>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     {% block appJsCss %} 
     
     {% endblock %}
 
   </head>
-  <body>
+  <body class={{ loginClass }}>
 
     {% block modal%}
     
@@ -67,5 +68,8 @@
       {% endblock %}
     </main>
     <script src="{% static 'web/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extraJs %} 
+    
+    {% endblock %}
   </body>
 </html>

@@ -28,7 +28,7 @@ SECRET_KEY = '=*kh7x@+^7)vfq6%h-0g^9!=&$l1jcy!zz8#4+#u^0kbd4^bg5'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
 

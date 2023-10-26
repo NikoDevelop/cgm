@@ -6,7 +6,7 @@
     style="background-color: #e3f2fd"
   >
     <div class="container-fluid">
-      <a class="navbar-brand" href="./index.html"
+      <a class="navbar-brand"  href="{% url 'home'%}"
         ><img src="{% static 'web/assets/logos/logo.png' %}"
       /></a>
       <button
@@ -34,20 +34,20 @@
               EL CLUB
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item menu">HISTORIA</a></li>
+              <li><a class="dropdown-item menu"  href="{% url 'historia'%}">HISTORIA</a></li>
               <li><a class="dropdown-item menu">DIRECTORIO</a></li>
               <li><a class="dropdown-item menu">COMITES</a></li>
               <li><a class="dropdown-item menu">ESTATUTOS</a></li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#links">LINKS DE INTERES</a>
+            <a class="nav-link" href="{% url 'home'%}#links">LINKS DE INTERES</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#contacto">CONTACTO</a>
+            <a class="nav-link" href="{% url 'home'%}#contacto">CONTACTO</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">INGRESO</a>
+            <a class="nav-link" href="{% url 'login'%}">INGRESO</a>
           </li>
         </ul>
       </div>

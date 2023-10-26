@@ -1,3 +1,25 @@
+.loginClass{
+  background-image: url(/static/web/assets/login/login.png) !important;
+    /* background: green; */
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+    height: 100% !important;
+}
+span {
+    color: #BF9D5E;
+    text-decoration: none !important;
+}
+a.next.page-numbers, a.prev.page-numbers, a.page-numbers.disable  {
+    color: gray;
+    text-decoration: none !important;
+}
+
+a {
+  text-decoration: none !important;
+}
 .context p , h1{
   text-align: justify;
   padding-left:0px !important;

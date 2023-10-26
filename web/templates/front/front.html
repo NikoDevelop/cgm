@@ -7,6 +7,15 @@
       <div class="col-lg-12 context">
         <h1> {{ value.titulo  | upper }}</h1>
         <p>{{ value.contenido|safe }}</p>
+        {% if value.file != ''%}
+         <iframe id="inlineFrameExample" 
+            title="Inline Frame Example" 
+            width="100%" 
+            height="800" 
+            src= "media/{{ value.file }}"> 
+        </iframe> 
+        {% endif %}
+        
       </div>
     </div>
   {% endfor %}

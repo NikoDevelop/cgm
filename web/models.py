@@ -5,6 +5,7 @@
 from django.db import models
 from django.contrib import admin
 from search_admin_autocomplete.admin import SearchAutoCompleteAdmin
+from autoslug import AutoSlugField
 import uuid
 
 from .choices import sexos, estado
@@ -53,13 +54,14 @@ class LinksAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
     list_display    =('titulo', 'order')
     list_per_page   = 10 # No of records per page
 
-# CONTENIDO PRINCIPAL DE HISTORIA, NOTICIAS, ETC
+# CONTENIDO PRINCIPAL DE HISTORIA, ETC
 class Front (models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     img             = models.ImageField(upload_to='front/')
     titulo          = models.CharField(max_length=200, blank=False, null=False)
     contenido       = models.TextField()
     order           = models.IntegerField(default=0)
+    file            = models.FileField(upload_to='front/files/', max_length=254,  blank=True)
 
     class Meta:
         verbose_name = 'Front'
@@ -73,6 +75,42 @@ class FrontAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
     search_fields   = ['titulo']
     list_display    = ('titulo', 'order')
     list_per_page   = 10
+
+
+# NOTICIAS DEL SITIO
+
+class Noticia (models.Model):
+    id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    titulo          = models.CharField(max_length = 200, blank = False, null = False)
+    img             = models.ImageField(upload_to='noticias/')
+    fecha           = models.DateField()
+    resumen         = models.CharField(max_length = 200, blank = False, null = False)
+    info            = models.TextField()
+    slug            = AutoSlugField(populate_from='titulo')
+    is_active       = models.BooleanField('Activo',default = False)
+    is_aprobado     = models.BooleanField('Aprobado',default = False)
+    is_pendiente    = models.BooleanField('Pendiente',default = True)
+    img1            = models.ImageField(upload_to='noticias/',blank = True)
+    img2            = models.ImageField(upload_to='noticias/',blank = True)
+    img3            = models.ImageField(upload_to='noticias/',blank = True)
+    img4            = models.ImageField(upload_to='noticias/',blank = True)
+    img5            = models.ImageField(upload_to='noticias/',blank = True)
+    lugar           = models.CharField(max_length = 200, blank = True, null = False)
+    
+
+    comentario      = models.TextField(default='Sin comentario')
+    class Meta:
+        verbose_name = 'Noticia'
+        verbose_name_plural = 'Noticias'
+        ordering = ['-fecha']
+
+    def __str__(self):
+        return self.titulo
+
+class NoticiaAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
+    search_fields   = ['titulo']
+    list_display    =('titulo', 'fecha','resumen')
+    list_per_page   = 10 # No of records per page
 
 
 # CLASIFICA A QUE PERTENECEN LAS LISTAS DE IMAGENES DEL MODELO 'LISTA'
