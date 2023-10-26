@@ -8,4 +8,6 @@ urlpatterns = [
     path('noticia' , noticia.as_view(), name = 'noticia'),
     path('noticias', principal_noticias.as_view(), name = 'principal_noticias'),
     path('torneo', torneo.as_view(), name= 'torneo'),
+    path('comite', comite.as_view(), name="comite"),
+    path('directorio', directorio.as_view(), name='directorio'),
 ]

@@ -1,0 +1,14 @@
+# .gitignore
+### Images
+
+*.tar
+
+### migraciones de DJANGO
+
+/web/migrations/__pycache__/*.py
+
+
+### base de datos postgres
+
+/data
+
