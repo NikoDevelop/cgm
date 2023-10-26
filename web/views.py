@@ -75,7 +75,7 @@ class historia(TemplateView):
         listado = Listado.objects.filter(tipo="7913628f-ab4f-4016-ac4e-bce8261fa801")
 
         # contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))[0]
-        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
         contexto['listado'] = list(listado.values('titulo', 'img', 'order'))
         # print(contexto['front'] )
         #contexto['personal']  = list(front.values('titulo','img', 'tipo', 'subtitulo', 'order'))
@@ -253,7 +253,7 @@ class comite(TemplateView):
         #listado_rc = Listado.objects.filter(tipo__tipo="ComisionRC")
         listado = Listado.objects.filter(tipo__tipo__in=['ComisionRC','ComisionED', 'Responsable Institucional'])
 
-        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
         contexto['listado'] = list(listado.values('titulo', 'img', 'tipo__tipo', 'order'))
 
         return contexto
@@ -272,7 +272,7 @@ class directorio(TemplateView):
         listado_c = Listado.objects.filter(tipo__tipo__in=['Capitan'])
         listado_p = Listado.objects.filter(tipo__tipo__in=['Presidentes'])
 
-        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
         contexto['listado_m'] = list(listado_m.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
         contexto['listado_c'] = list(listado_c.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
         contexto['listado_p'] = list(listado_p.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))

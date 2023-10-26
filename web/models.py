@@ -145,14 +145,14 @@ class Listado (models.Model):
     class Meta:
         verbose_name = 'Listado'
         verbose_name_plural = 'Listados'
-        ordering = ['order']
+        ordering = ['tipo','order']
 
     def __str__(self):
         return self.titulo    
 
 class ListadosAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
     search_fields   = ['titulo']
-    list_display    =('titulo', 'order')
+    list_display    =('titulo', 'order', 'tipo')
     list_per_page   = 10 # No of records per page
 
 
