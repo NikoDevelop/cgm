@@ -1,5 +1,3 @@
-
-
 regiones = (
     ('I', 'Región de Tarapacá  '),
     ('II', 'Región de Antofagasta  '),
@@ -18,3 +16,24 @@ regiones = (
     ('XV', 'Región de Arica y Parinacota   '),
     ('XVI', 'Región de Ñuble ')
 )
+
+estado_cuota = (
+    ('P', 'Pendiente'),
+    ('C', 'Cancelado'),
+)
+
+mes = (
+    ('ENE', 'Enero'),
+    ('FEB', 'Febrero'),
+    ('MAR', 'Marzo'),
+    ('ABR', 'Abril'),
+    ('MAY', 'Mayo'),
+    ('JUN', 'Junio'),
+    ('JUL', 'Julio'),
+    ('AGO', 'Agosto'),
+    ('SEP', 'Septiembre'),
+    ('OCT', 'Octubre'),
+    ('NOV', 'Noviembre'),
+    ('DIC', 'Diciembre'),
+)
+
