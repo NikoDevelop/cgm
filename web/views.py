@@ -25,9 +25,11 @@ from django.contrib.auth.models import User, Group
 from django.urls import reverse_lazy
 
 from django.shortcuts import render,redirect
-
 from .forms import *
 from .mixins import *
+from .utils import *
+from django.shortcuts import HttpResponse
+from datetime import datetime
 
 
 nameWeb = "CGM"
@@ -279,3 +281,103 @@ class directorio(TemplateView):
         
         return contexto
 
+# Create your views here.
+class normas_reglas(TemplateView):
+    template_name = "views/normas_reglas.html"
+    # template_name = "root/empty.html"
+
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        contexto["nameWeb"] = nameWeb
+        contexto["title"] = "normas y reglas"
+        front = Front.objects.filter(titulo="normas_reglas")
+        
+        #listado = Listado.objects.filter(tipo='presidentes')
+        listado = NormaRegla.objects.all()
+
+        # contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))[0]
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
+        contexto['listado'] = list(listado.values('titulo', 'descripcion', 'archivo', 'order'))
+        # print(contexto['front'] )
+        #contexto['personal']  = list(front.values('titulo','img', 'tipo', 'subtitulo', 'order'))
+
+        return contexto
+    
+# Create your views here.
+class cuotas(TemplateView):
+    template_name = "views/cuotas.html"
+  
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        contexto["nameWeb"] = nameWeb
+        contexto["title"] = "normas y reglas"
+
+        año_filtro = 2021
+        rut_usuario = '16665758-K'
+        front = Front.objects.filter(titulo="cuotas")
+        #listado = NormaRegla.objects.all()
+        listado = Cuota.objects.filter(año__año=año_filtro, usuario__rut=rut_usuario).select_related('año', 'usuario')
+        mes_datetime = [datetime(año_filtro, mes, 1) for mes in range(1,13)]
+
+        for cuota in listado:
+            cuota.mes_datetime = mes_datetime[cuota.mes -1]
+
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
+        contexto['listado'] = listado
+        return contexto
+    
+# Create your views here.
+class torneo_resumen(TemplateView):
+    template_name = "views/torneo_resumen.html"
+    
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        contexto["nameWeb"] = nameWeb
+        contexto["title"] = "torneo_resumen"
+        front = Front.objects.filter(titulo="torneo")
+        
+        listado = NormaRegla.objects.all()
+
+        contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
+        contexto['listado'] = list(listado.values('titulo', 'descripcion', 'archivo', 'order'))
+
+        return contexto
+    
+
+# Formulario con las opciones de Cuotas los socios del club.    
+def generar_cuotas_form(request):
+    return render(request,'views/generar_cuotas_form.html')
+
+#def generar_cuotas(request, año, valor):
+def generar_cuotas(request):
+    if request.method == 'POST':
+        año =   request.POST.get('año')
+        valor = request.POST.get('valor')
+        respuesta = generar_cuotas_grupal(año, valor)
+        return HttpResponse(respuesta)
+    return HttpResponse(f'algo anda mal')
+
+def generar_cuotas_socio(request):
+    if request.method == 'POST':
+        rut = request.POST.get('rut')
+        año = request.POST.get('año')
+        respuesta = generar_cuotas_individual(rut, año)
+        return HttpResponse(respuesta)
+    return HttpResponse(f'algo anda mal')
+    #return render(request,'views/generar_cuotas_form.html')
+
+def borrar_cuotas(request):
+    if request.method == 'POST':
+        año = request.POST.get('año')
+        respuesta = borrar_cuotas_grupal(año)
+        return HttpResponse(respuesta)
+    return HttpResponse(f'Algo anda mal')
+
+def borrar_cuotas_socio(request):
+    if request.method == 'POST':
+        rut = request.POST.get('rut')
+        año = request.POST.get('año')
+        respuesta = borrar_cuotas_individual(rut, año)
+        return HttpResponse(respuesta)
+    return HttpResponse(f'algo anda mal')
+    #return render(request,'views/generar_cuotas_form.html')
