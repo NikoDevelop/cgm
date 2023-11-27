@@ -12,9 +12,9 @@
       {% for value in link %}
         <div class="col-lg-4">
             <img src="media/{{ value.img}}" alt="">
-            <h2 class="fw-normal">{{ value.titulo }}</h2>
+            <h2 class="fw-normal">{{ value.titulo | upper}}</h2>
             <p>
-           {{ value.parrafo }}
+           {{ value.parrafo |capfirst }}
             </p>
         </div>
       {% endfor %}

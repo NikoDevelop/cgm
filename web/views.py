@@ -25,8 +25,9 @@ from django.contrib.auth.models import User, Group
 from django.urls import reverse_lazy
 
 from django.shortcuts import render,redirect
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 
-from .forms import *
+
 from .mixins import *
 
 
@@ -71,12 +72,13 @@ class historia(TemplateView):
         contexto["title"] = "historia"
         front = Front.objects.filter(titulo="historia")
         
-        #listado = Listado.objects.filter(tipo='presidentes')
-        listado = Listado.objects.filter(tipo="7913628f-ab4f-4016-ac4e-bce8261fa801")
+        listado_p = Listado.objects.filter(tipo__tipo__in=['Presidentes']).filter(actual=False)
+
 
         # contexto['front']  = list(front.values('titulo','img', 'contenido', 'order'))[0]
         contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
-        contexto['listado'] = list(listado.values('titulo', 'img', 'order'))
+        contexto['listado_p'] = list(listado_p.values('titulo', 'img', 'order'))
+        contexto['listado_pTitulo'] = 'Antiguos Presidentes'
         # print(contexto['front'] )
         #contexto['personal']  = list(front.values('titulo','img', 'tipo', 'subtitulo', 'order'))
 
@@ -92,7 +94,9 @@ class noticia(DetailView):
         contexto["nameWeb"] = nameWeb
         contexto["title"] = "noticia"
         dato =  self.get_object()
-        contexto['new'] =  dato
+        contexto['new'] =  dato[0]
+        dato = list(dato.values('titulo','img','fecha','resumen','info','slug','img1', 'img2', 'img3','img4','img5','region'))
+        dato = dato[0]
         lista = []
         if(dato['img1']!=''):
             lista.append(dato['img1'])
@@ -113,10 +117,7 @@ class noticia(DetailView):
     def get_object(self, **kwargs):
         print('slug', self.kwargs.get('slug', None))
         slug =  self.model.objects.filter(slug = self.kwargs.get('slug', None))
-        print('slug1', slug )
-        slug = list(slug.values('titulo','img','fecha','resumen','info','slug','img1', 'img2', 'img3','img4','img5','lugar'))
-        print('slug2', slug)
-        return slug[0]
+        return slug
 
 # Create your views here.
 class principal_noticias(TemplateView):
@@ -126,7 +127,6 @@ class principal_noticias(TemplateView):
     def get_queryset(self):
         
         lNoticia = self.model.objects.filter(is_active=True).filter(is_aprobado=True).order_by('fecha')
-        lNoticia = list(lNoticia.values('titulo', 'img', 'fecha','resumen','lugar'))
         paginator = Paginator(lNoticia,3)
         page = self.request.GET.get('page')
         lNoticia = paginator.get_page(page)
@@ -153,19 +153,18 @@ class principal_noticias(TemplateView):
 
         return contexto
 
-class torneo(TemplateView):
-    template_name = "views/torneo.html"
+class torneos(SocioMixin,TemplateView):
+    template_name = "views/torneos.html"
 
     def get_context_data(self, **kwargs):
         contexto = super().get_context_data(**kwargs)
         contexto["nameWeb"] = nameWeb
         contexto["title"] = "torneo"
-        mainCard = Card.objects.filter(activo = True)
-        torneoCard = Card.objects.filter(activo = False)
-        contexto['mainCard'] = list(mainCard.values('titulo', 'direccion', 'comuna', 'region', 'descripcion', 'img', 'fecha', 'cupos', 'inscritos', 'order'))
-        contexto['torneoCard'] = list(torneoCard.values('titulo', 'direccion', 'comuna', 'region', 'descripcion', 'img', 'fecha', 'cupos', 'inscritos', 'order'))
-        contexto['gato'] = list(mainCard.values('titulo'))[0]
-        #print(contexto['mainCard'][0].titulo)
+        mainCard = Torneo.objects.filter(proximo = True)
+        #torneoCard = Torneo.objects.filter(activo = True).filter(proximo=False)
+        torneoCard = Torneo.objects.filter(proximo=False).order_by('-fecha')
+        contexto['mainCard'] = mainCard
+        contexto['torneoCard'] = torneoCard
         return contexto
 
 
@@ -201,44 +200,7 @@ class notFound404(TemplateView):
         print(contexto['front'])
 
         return contexto  
-class Login(FormView):
-    
-    template_name = 'views/login.html'
-    form_class = FormularioLogin
-    success_url = reverse_lazy('home')
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
 
-    def dispatch(self,request,*args,**kwargs):
-        return super(Login,self).dispatch(request,*args,**kwargs)
-    
-    def form_valid(self,form):
-        login(self.request,form.get_user())
-        return super(Login,self).form_valid(form)
-
-    def get(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        contexto = super(Login, self).get_context_data(**kwargs)
-        contexto['nameWeb'] = nameWeb
-        contexto['title'] = 'ACCESO AL CLUB' 
-        contexto['loginClass'] = 'loginClass'
-
-        contexto['error'] = False
-
-        return self.render_to_response(contexto)
-
-    def form_invalid(self, form, **kwargs):
-        contexto =  super(Login, self).get_context_data(**kwargs)
-        contexto['nameWeb'] = nameWeb
-        contexto['title'] = 'LOGIN'
-        contexto['loginClass'] = 'loginClass'
-        contexto['error'] = True
-        return self.render_to_response(contexto)
-
-def logoutUsuario(request):
-    logout(request)
-    return HttpResponseRedirect('/accounts/login')
 
 
 class comite(TemplateView):
@@ -269,13 +231,15 @@ class directorio(TemplateView):
         contexto["title"] = "directorio"
         front = Front.objects.filter(titulo="directorio")
         listado_m = Listado.objects.filter(tipo__tipo__in=['Directorio'])
-        listado_c = Listado.objects.filter(tipo__tipo__in=['Capitan'])
-        listado_p = Listado.objects.filter(tipo__tipo__in=['Presidentes'])
+        listado_cap = Listado.objects.filter(tipo__tipo__in=['Capitan']).filter(actual=True)
+        listado_p = Listado.objects.filter(tipo__tipo__in=['Presidentes']).filter(actual=True)
 
         contexto['front']  = list(front.values('titulo','img', 'contenido', 'order','file'))
         contexto['listado_m'] = list(listado_m.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
-        contexto['listado_c'] = list(listado_c.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
+        contexto['listado_cap'] = list(listado_cap.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
         contexto['listado_p'] = list(listado_p.values('titulo', 'img', 'order', 'tipo__tipo', 'order'))
         
+        contexto['listado_pTitulo'] = 'Presidente Actual'
+        contexto['listado_capTitulo'] = 'Capitan Actual'
         return contexto
 

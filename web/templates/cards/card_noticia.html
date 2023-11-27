@@ -1,24 +1,29 @@
 {% load static %} {% static "" as baseUrl %}
 
  <div class="container ">
-   <h1 class="card-title ">NOTICIAS</h1>
+   <h1 class=" ">NOTICIAS</h1>
    <div class="row row-cols-1 row-cols-md-3 g-4">
      {% for value in datos %}
+     
+     <a class="" href="{%url 'noticia' value.titulo|slugify %}">
      <div class="col-sm-12">
+      
        <div class="card h-100 cardTorneo">
-          <img src="media/{{ value.img }}" class="card-img-top" alt="...">
-          <div class="card-body cardTorneo">
-            <h5 class="card-title"> {{ value.titulo }}</h5>
-            <h6> <img src="static/web/assets/logos/point.png" style="padding: 5px;"> {{ value.lugar }}</h6>
-            <p class="card-text"> {{ value.resumen }}</p>
-          </div>
-          <div class="card-footer">
-            <small class="text-body-secondary"> <img src="static/web/assets/logos/calendario.png" style="padding: 10px;">{{ value.fecha }}
-            </small>
-            <a class="read_more_events btn btn-outline-maincolor" href="{%url 'noticia' value.titulo|slugify %}">Leer</a>
-          </div>
+           
+            <img src="media/{{ value.img }}" class="card-img-top" alt="...">
+            <div class="card-body cardTorneo">
+              <h5 class="card-title text-center"> {{ value.titulo | upper }}</h5>
+              <h6> <img src="static/web/assets/logos/point.png" style="padding: 5px; text-align: left!;"> {{ value.direccion |capfirst}}, {{ value.get_region_display }}</h6>
+              <p class="card-text"> {{ value.resumen |capfirst }}</p>
+            </div>
+            <div class="card-footer">
+              <small class="text-body-secondary"> <img src="static/web/assets/logos/calendario.png" style="padding: 10px;">{{ value.fecha }}
+              </small>
+            </div>
+            
         </div>
       </div>
+      </a>
       {% endfor %}
     </div>
     <div class="d-flex justify-content-end">

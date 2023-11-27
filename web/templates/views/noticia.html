@@ -5,6 +5,12 @@
   {{nameWeb}} {{ title }} 
 {% endblock %} 
 
+{% block header %} 
+
+      {% include "header/header_backend.html" %}
+
+{% endblock %}
+
 {% block body %}
 
    {% include "banner/banner2.html" %}
@@ -14,7 +20,7 @@
         <div class="row">
           <div class="col-lg-12 context">
             <h1>NOTICIA</h1>
-            <p>{{ new.fecha }} -  {{ new.lugar }}
+            <p>{{ new.fecha }} -  {{ new.get_region_display }}
               </p>
             
             {{ new.info|linebreaks }}

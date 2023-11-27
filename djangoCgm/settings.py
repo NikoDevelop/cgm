@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'search_admin_autocomplete',
+    'usuarios',
     'web',
 ]
 
@@ -121,6 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 # LANGUAGE_CODE = 'en-us'
+#AUTH_USER_MODEL = 'usuarios.Usuario'
+AUTH_USER_MODEL = "usuarios.MyUser"
+
 LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'

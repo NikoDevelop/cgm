@@ -8,7 +8,9 @@ from search_admin_autocomplete.admin import SearchAutoCompleteAdmin
 from autoslug import AutoSlugField
 import uuid
 
-from .choices import sexos, estado
+from .choices import regiones
+
+
 
 # Create your models here.
 
@@ -95,8 +97,9 @@ class Noticia (models.Model):
     img3            = models.ImageField(upload_to='noticias/',blank = True)
     img4            = models.ImageField(upload_to='noticias/',blank = True)
     img5            = models.ImageField(upload_to='noticias/',blank = True)
-    lugar           = models.CharField(max_length = 200, blank = True, null = False)
-    
+    direccion       = models.CharField(max_length = 200, blank = True, null = False)
+    region          = models.CharField(max_length=50,choices= regiones, default= 'XIII', verbose_name="Region")
+ 
 
     comentario      = models.TextField(default='Sin comentario')
     class Meta:
@@ -141,6 +144,7 @@ class Listado (models.Model):
     titulo          = models.CharField(max_length=200, blank= False, null = False)
     img             = models.ImageField(upload_to='listado/')
     order           = models.IntegerField(default=0)
+    actual          = models.BooleanField(default= False)
 
     class Meta:
         verbose_name = 'Listado'
@@ -152,92 +156,42 @@ class Listado (models.Model):
 
 class ListadosAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
     search_fields   = ['titulo']
-    list_display    =('titulo', 'order', 'tipo')
+    list_display    =('titulo', 'order', 'tipo', 'actual')
     list_per_page   = 10 # No of records per page
 
 
 # ADMINISTRA LOS CARDS DE TORNEO
-class Card (models.Model):
+class Torneo (models.Model):
     id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     titulo          = models.CharField(max_length=200, blank=False, null= False, verbose_name="Titulo")
     direccion       = models.CharField(max_length=200, blank=False, null= False, verbose_name="Direccion")
-    comuna          = models.CharField(max_length=200, blank=False, null=False, verbose_name="Comuna")
-    region          = models.CharField(max_length=50, blank=False, null=False, verbose_name="Region")
-    descripcion     = models.TextField()
-    img             = models.ImageField(upload_to='cards/')
+    region          = models.CharField(max_length=50,choices= regiones, default= 'XIII', verbose_name="Region")
+    descripcion     = models.TextField(blank=True)
+    img             = models.ImageField(upload_to='torneo/')
     fecha           = models.DateField()
     cupos           = models.IntegerField()
     inscritos       = models.IntegerField(default=0)
-    activo          = models.BooleanField(default=False)
+    activo          = models.BooleanField(default=True)
+    proximo         = models.BooleanField(default=False)
     order           = models.IntegerField(default=0)
 
     class Meta:
-        verbose_name    = 'Card'
-        verbose_name_plural = 'Cards'
-        ordering    = ['order']
+        verbose_name    = 'Torneo'
+        verbose_name_plural = 'Torneos'
+        ordering    = ['-proximo','activo','fecha']
 
     def __str__(self):
         return self.titulo
 
-class CardsAdmin (SearchAutoCompleteAdmin, admin.ModelAdmin):
+
+class TorneoAdmin (SearchAutoCompleteAdmin, admin.ModelAdmin):
     search_fields   = ['titulo']
-    list_display    = ('titulo', 'order')
+    list_display    = ('titulo','fecha','region','activo','proximo')
     list_per_page   = 10 # No of records per page
 
 
-# PERFILES DE USUARIO (SOCIO, INVITADO, CAPITAN, ...)
-class Perfil (models.Model):
-    id              = models.UUIDField(primary_key=True, default=uuid.uuid4, editable= False)
-    perfil          = models.CharField(max_length=30, blank=False, null=False, verbose_name= 'Perfil de usuario')
-    descripcion     = models.TextField(blank=True, null=True, verbose_name='Descripcion del perfil')
-    order           = models.IntegerField(default=0)
-
-    class Meta: 
-        verbose_name    = 'Perfil'
-        verbose_name_plural = 'Perfiles'
-        ordering    = ['order']
-    
-    def __str__(self):
-        return self.perfil
-
-class PerfilesAdmin (SearchAutoCompleteAdmin, admin.ModelAdmin):
-    search_fields   = ['perfil']
-    list_display    = ('perfil', 'order')
-    list_per_page   = 10
 
 
-
-# LA ESTRUCTURA DEL USUARIO QUE INTERACTUA CON EL SITIO CGM
-class Usuario (models.Model):
-    id                  = models.UUIDField(primary_key=True, default=uuid.uuid4, editable= False)
-    rut                 = models.CharField(max_length=10, blank=False, null= False, verbose_name="Rut")
-    primer_nombre       = models.CharField(max_length=200, blank=False, null=False, verbose_name= "Primer nombre")
-    segundo_nombre      = models.CharField(max_length=200, blank=False, null=False, verbose_name= "Segundo nombre")
-    apellido_paterno    = models.CharField(max_length=200, blank=False, null=False, verbose_name= "Apellido paterno")
-    apellido_materno    = models.CharField(max_length=200, blank=False, null=False, verbose_name= "Apellido materno")
-    fecha_nacimiento    = models.DateField(blank=False, null=False, verbose_name="Fecha de nacimiento")
-    correo              = models.EmailField(max_length=200, blank=False, null=False, verbose_name="Correo electronico")
-    telefono            = models.IntegerField(blank=False, null=False, verbose_name="Telefono movil")
-    sexo                = models.CharField(max_length=1, choices= sexos, default= 'M')
-    fecha_creacion      = models.DateField(auto_now_add=True, blank=True)
-    # categoria         = a que categoria juega ej. Super Senior, Varones Senior,.. NOTA: averiguar si esto es un atributo del usuario o del torneo
-    perfil              = models.ForeignKey(Perfil, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Perfil de usuario') #ej. socio, invitado, capitan, tesorero...
-    estado              = models.CharField(max_length=1, choices= estado, default= 'A')  # en que estado se encuentra la cuenta ej. activa, inactiva, suspendida
-    # socio_club        = si pertenece a un club, al parecer los de CGM tambien pertenecen a otros clubes ej. Prince of Wales Country Club, Club de Golf Las Araucarias, etc...  
-    order               = models.IntegerField(default=0)
-
-    class Meta:
-        verbose_name    = 'Usuario'
-        verbose_name_plural = 'Usuarios'
-        ordering    = ['order']
-
-    def __str__(self):
-        return self.rut
-    
-class UsuariosAdmin(SearchAutoCompleteAdmin, admin.ModelAdmin):
-    search_fields   = ['rut']
-    list_display    = ('rut', 'order')
-    list_per_page   = 10
 
 
 # LISTADO DE CLUBES DONDE SE REALIZAN LOS TORNEOS, TAL VEZ SE CELEBREN MÁS DE 1 TORNEO POR CLUB

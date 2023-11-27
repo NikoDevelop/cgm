@@ -35,6 +35,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from web.views import *
+from usuarios.views import *
 
 admin.autodiscover()
 urlpatterns = [
@@ -42,4 +43,6 @@ urlpatterns = [
 	url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 	path('admin/',admin.site.urls ),
 	path('',include('web.urls')),
+    path('',include('usuarios.urls')),
+
 ] 

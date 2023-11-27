@@ -11,24 +11,11 @@
       {% if value.tipo__tipo == 'Directorio' %}
         <div class="col-sm-12 col-md-6 col-lg-4">
           <img src="media/{{ value.img}}" alt="">
-          <h2 class="fw-normal">{{ value.titulo }}</h2>
+          <h2 class="fw-normal">{{ value.titulo |capfirst }}</h2>
         </div>
       {% endif %}
     {% endfor %}
   </div>
 
-  <div class="row">
-    <div class="col-sm-12 col-md-6 col-lg-4">
-      <img src="media/{{ listado_p.0.img}}" alt="">
-      <h2 class="fw-normal">PRESIDENTE</h2>
-      <h2 class="fw-normal">xxxxxxx</h2>
-    </div>
-
-    <div class="col-sm-12 col-md-6 col-lg-4">
-      <img src="media/{{ listado_p.0.img}}" alt="">
-      <h2 class="fw-normal">CAPITÁN</h2>
-      <h2 class="fw-normal">xxxxxxx</h2>
-    </div>
-  </div>
  
 </div><!-- /.container -->
